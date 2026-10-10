@@ -4,11 +4,14 @@
 # The archive carries the per-case evidence behind every published number, not
 # the whole working log tree: superseded sweeps, pre-selection scans and
 # rendered media are excluded (see DATA.md). Run it from a full working copy,
-# i.e. one that still contains Logs/ and Meta_Learning_Results/.
+# i.e. one that still contains Logs/ and Meta_Learning_Results/. Pass that
+# working copy as the second argument when using this script from the release.
 set -euo pipefail
 
 OUT=${1:-morphica-data-archive.tar.gz}
-ROOT=$(cd "$(dirname "$0")/.." && pwd)
+OUT=$(realpath -m "$OUT")
+ROOT=${2:-$(cd "$(dirname "$0")/.." && pwd)}
+ROOT=$(cd "$ROOT" && pwd)
 cd "$ROOT"
 
 EVIDENCE=(
@@ -36,5 +39,5 @@ echo "packing ${#PATHS[@]} paths (~$(du -sch "${PATHS[@]}" 2>/dev/null | tail -1
 tar --transform='s|^Logs/|data/logs/|;s|^Meta_Learning_Results/meta_parameters|data/meta_parameters|;s|^data/logs/ugv/manuscript_matrix|data/logs/ugv/benchmark_matrix|' \
     -czf "$OUT" "${PATHS[@]}"
 tar -tzf "$OUT" > "$OUT.contents.txt"
-sha256sum "$OUT" > "$OUT.sha256"
+(cd "$(dirname "$OUT")" && sha256sum "$(basename "$OUT")") > "$OUT.sha256"
 echo "wrote $OUT ($(du -h "$OUT" | cut -f1)), plus .contents.txt and .sha256"

@@ -1,4 +1,4 @@
-# Optional: comparison methods (learned and graph-optimisation baselines). The
+# Optional: comparison methods (Python 3.9–3.11; learned and graph-optimisation baselines). The
 # MORPHICA controller and its full result set do not need these.
 # The published baseline runs were produced with torch 2.6.0+cu124 on NVIDIA
 # RTX 4080 SUPER GPUs; the original evidence environment pinned torch 2.0.0.
@@ -7,7 +7,7 @@ torch==2.6.0
 einops
 torch_geometric
 
-# ML-DAGL additionally needs Pretrained_model/model.pt  (included here).
-# CR-MGC additionally needs Meta_Learning_Results/... .npy (data archive, see DATA.md).
+# ML-DAGL additionally needs data/pretrained/model.pt (included here).
+# CR-MGC additionally needs data/meta_parameters/*.npy (data archive, see DATA.md).
 # UGV/render_blender.py runs inside Blender's bundled Python and uses its
 # modules (bmesh, mathutils, imageio); it is not needed for the benchmarks.

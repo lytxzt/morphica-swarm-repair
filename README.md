@@ -47,14 +47,16 @@ ugv/                                                 terrain-constrained ground-
 
 ## Install
 
-CPU-only pipeline — controller, benchmarks, control suites and diagnostics:
+Use Python 3.10 or 3.11 for both environments below. The CPU pipeline also
+supports Python 3.8 and 3.9. MORPHICA, HERO, CEN and SIDR run with the core
+dependencies alone:
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Comparison methods (GPU, optional):
+Learned and graph-optimisation comparison methods (Python 3.9–3.11):
 
 ```bash
 pip install -r requirements-baselines.txt
@@ -70,18 +72,31 @@ Raw per-case logs are not stored in git. Unpack the data archive first (see
 populated.
 
 ```bash
-# matched control suites: null (random waypoints), ablations, observation stress, finite relay
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python experiments/run_control_suites.py --suite null --workers 8
+# Verify the archived control results (no simulation or file changes)
+for suite in null ablation nonideal relay; do
+    python experiments/run_control_suites.py --suite "$suite" --verify-archived
+done
+python experiments/run_ablation_cohort_b.py --verify-archived
 
 python tests/test_control_suites.py            # regression checks
+python tests/test_release.py                  # installation and archive checks
+
+# Run a fresh main benchmark
 python experiments/run_main_sweep.py --algorithm MORPHICA --num-agents 1000 \
     --destroyed-values 500 --max-cases 50 --output-dir data/logs/morphica_check
+
+# Rerun a control suite into a separate output directory
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python experiments/run_control_suites.py \
+    --suite null --workers 8 --output-dir outputs/control_suites
+python experiments/run_ablation_cohort_b.py --workers 8 --output-dir outputs/control_suites
 ```
 
-`experiments/run_control_suites.py` resumes completed rows and rejects changes
-to code or geometry hashes, so a partially completed suite can be continued
-safely. Every per-case row stores its damage-mask SHA-256, seed and event
-indicator.
+Both control runners default to `outputs/control_suites/`. They resume new runs
+only when the code and geometry hashes match their run manifests. The archived
+CSVs and manifests in `data/control_suites/` retain the recorded results and
+their original source information; `--verify-archived` checks task coverage,
+damage masks, geometry and connectivity events. Every per-case row stores its
+damage-mask SHA-256, seed and event indicator.
 
 ## Data
 
@@ -98,6 +113,6 @@ is redistributed.
 
 ## Licence and citation
 
-Released under the MIT licence — see [LICENSE](LICENSE). If you use this code,
-please cite the manuscript; the full citation and DOI will be added here on
-publication.
+Released under the MIT licence — see [LICENSE](LICENSE). Cite the software
+using [CITATION.cff](CITATION.cff). The [v1.0.1 release](https://github.com/lytxzt/morphica-swarm-repair/releases/tag/v1.0.1)
+provides the code snapshot and accompanying data archive.

@@ -15,24 +15,28 @@ import json
 from pathlib import Path
 import random
 
-from run_control_suites import ROOT, FIELDS, section, worker
+from run_control_suites import ROOT, FIELDS, section, worker, read_rows, validate_rows, verify_archive
 
-OUT = ROOT / 'data/control_suites/ablation_cohort_b.csv'
+ARCHIVED = ROOT / 'data/control_suites/ablation_cohort_b.csv'
+OUT = ROOT / 'outputs/control_suites/ablation_cohort_b.csv'
 MANIFEST = OUT.with_suffix('.manifest.json')
 VARIANTS = ['full', 'no-R', 'no-P', 'no-S']
 CASES = list(range(100, 150))
 
 
 def sources():
-    names = ['tools/repair_ablation_provenance.py',
+    names = ['experiments/run_ablation_cohort_b.py',
              'experiments/run_control_suites.py', 'controllers/MORPHICA.py',
              'controllers/FiniteRelayMORPHICA.py',
+             'Configurations.py', 'Utils.py',
              'data/configs/swarm_positions_1000.xlsx']
     return {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
             for name in names}
 
 
 def validate(rows):
+    validate_rows(rows, [('ablation_cohort_b', 1000, 500, case, variant)
+                         for case in CASES for variant in VARIANTS])
     expected = {(case, variant) for case in CASES for variant in VARIANTS}
     actual = {(int(r['case']), r['variant']) for r in rows}
     if len(rows) != len(expected) or actual != expected:
@@ -69,10 +73,26 @@ def validate(rows):
 
 
 def main():
+    global OUT, MANIFEST
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workers', type=int, default=8)
+    parser.add_argument('--output-dir', type=Path, default=OUT.parent)
+    parser.add_argument('--verify-archived', action='store_true')
     args = parser.parse_args()
+    if args.verify_archived:
+        rows = verify_archive(ARCHIVED, [('ablation_cohort_b', 1000, 500, case, variant)
+                                        for case in CASES for variant in VARIANTS])
+        comparisons = validate(rows)
+        print(f'ablation_cohort_b: {len(rows)} archived rows verified', flush=True)
+        print(json.dumps(comparisons), flush=True)
+        return
+    OUT = args.output_dir.resolve() / OUT.name
+    MANIFEST = OUT.with_suffix('.manifest.json')
+    if OUT == ARCHIVED.resolve():
+        parser.error('Use a new output directory; data/control_suites contains archived results')
     hashes = sources()
+    if OUT.exists() and not MANIFEST.exists():
+        raise ValueError('Existing rows have no source manifest; use a new output directory')
     if MANIFEST.exists():
         if json.loads(MANIFEST.read_text())['sources'] != hashes:
             raise ValueError('Source changed; retain recorded cohort and use a new output')
@@ -84,12 +104,18 @@ def main():
             'selection': 'entire pre-existing historical cohort, fixed before replay',
             'retain_offset_zero_cohort': True,
         }, indent=2) + '\n')
-    rows = list(csv.DictReader(OUT.open())) if OUT.exists() else []
+    rows = read_rows(OUT) if OUT.exists() else []
     done = {(int(r['case']), r['variant']) for r in rows}
     if len(rows) != len(done):
         raise ValueError('Duplicate task')
+    validate_rows(rows, [('ablation_cohort_b', 1000, 500, case, variant)
+                         for case in CASES for variant in VARIANTS], complete=False)
     tasks = [('ablation', 1000, 500, case, variant)
              for case in CASES for variant in VARIANTS if (case, variant) not in done]
+    if not tasks:
+        comparisons = validate(rows)
+        print(json.dumps(comparisons), flush=True)
+        return
     with OUT.open('a', newline='') as handle:
         writer = csv.DictWriter(handle, fieldnames=FIELDS)
         if not rows:

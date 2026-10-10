@@ -1,10 +1,16 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite the manuscript below."
+message: "If you use MORPHICA, please cite this software release."
 title: "MORPHICA: source-free morphogenetic repair for fragmented robot swarms"
-version: "1.0.0"
+type: software
+version: "1.0.1"
+date-released: "2026-10-10"
+url: "https://github.com/lytxzt/morphica-swarm-repair/releases/tag/v1.0.1"
 license: MIT
 repository-code: "https://github.com/lytxzt/morphica-swarm-repair"
-# TODO before release: complete the author list, journal, year and DOI.
 authors:
-  - family-names: "TODO"
-    given-names: "TODO"
+  - family-names: "Lin"
+    given-names: "Huan"
+  - family-names: "Ding"
+    given-names: "Lianghui"
+  - family-names: "Wang"
+    given-names: "Lin"

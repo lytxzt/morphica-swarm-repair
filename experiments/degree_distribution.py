@@ -3,7 +3,6 @@ _sys.path.insert(0, str(_pathlib.Path(__file__).resolve().parents[1]))
 import numpy as np
 
 from Configurations import *
-from baselines.dagl.Damage_Attention import calculate_khop_neighbour
 import Utils
 
 import matplotlib.pyplot as plt

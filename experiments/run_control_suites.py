@@ -36,9 +36,53 @@ from scipy.spatial import cKDTree
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-OUT = ROOT / 'data' / 'control_suites'
+ARCHIVED = ROOT / 'data' / 'control_suites'
+OUT = ROOT / 'outputs' / 'control_suites'
 FIELDS = ['suite', 'N', 'D', 'case', 'variant', 'seed', 'mask_sha256',
           'horizon', 'initial_K', 'T_conn', 'success', 'final_K', 'seconds']
+
+
+def read_rows(path):
+    with path.open(newline='') as handle:
+        return list(csv.DictReader(handle))
+
+
+def validate_rows(rows, tasks, complete=True):
+    expected = set(tasks)
+    actual = [(r['suite'], int(r['N']), int(r['D']), int(r['case']), r['variant'])
+              for r in rows]
+    if len(actual) != len(set(actual)):
+        raise ValueError('Duplicate task')
+    if not set(actual) <= expected or (complete and set(actual) != expected):
+        raise ValueError('Recorded tasks do not match the suite')
+    for r in rows:
+        n, d, case = int(r['N']), int(r['D']), int(r['case'])
+        seed = case + 1725
+        mask = hashlib.sha256(json.dumps(sorted(
+            random.Random(seed).sample(range(n), d))).encode()).hexdigest()
+        if int(r['seed']) != seed or r['mask_sha256'] != mask:
+            raise ValueError(f'Incorrect damage mask: {case}/{r["variant"]}')
+        horizon = int(0.8 * {200: 1000, 1000: 2250}[n])
+        t, k = int(r['T_conn']), int(r['final_K'])
+        if int(r['horizon']) != horizon or not 0 <= t < horizon or k < 1:
+            raise ValueError('Invalid horizon or terminal state')
+        if int(r['initial_K']) <= 1 or int(r['success']) != int(k == 1 and t < horizon - 1):
+            raise ValueError('Inconsistent connectivity event')
+
+
+def verify_archive(path, tasks):
+    rows = read_rows(path)
+    metadata = json.loads(path.with_suffix('.manifest.json').read_text())
+    validate_rows(rows, tasks)
+    for name, digest in metadata['sources'].items():
+        if 'swarm_positions_' in name:
+            geometry = ROOT / 'data/configs' / Path(name).name
+            if hashlib.sha256(geometry.read_bytes()).hexdigest() != digest:
+                raise ValueError(f'Archived geometry mismatch: {name}')
+    if 'csv_sha256' in metadata:
+        if hashlib.sha256(path.read_bytes()).hexdigest() != metadata['csv_sha256']:
+            raise ValueError('Archived CSV checksum mismatch')
+    return rows
 
 
 def section(path, name):
@@ -178,32 +222,54 @@ def symmetry():
 
 
 def main():
+    global OUT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--suite', choices=['null', 'ablation', 'nonideal', 'relay', 'symmetry'], required=True)
     parser.add_argument('--workers', type=int, default=8)
+    parser.add_argument('--output-dir', type=Path, default=OUT,
+                        help='new run directory (default: outputs/control_suites)')
+    parser.add_argument('--verify-archived', action='store_true',
+                        help='validate recorded rows without rerunning or changing them')
     args = parser.parse_args()
+    OUT = args.output_dir.resolve()
+    if args.verify_archived:
+        if args.suite == 'symmetry':
+            parser.error('--verify-archived supports null, ablation, nonideal and relay')
+        rows = verify_archive(ARCHIVED / f'{args.suite}.csv', tasks_for(args.suite))
+        print(f'{args.suite}: {len(rows)} archived rows verified', flush=True)
+        return
+    if OUT == ARCHIVED.resolve():
+        parser.error('Use a new output directory; data/control_suites contains archived results')
     if args.suite == 'symmetry':
         symmetry()
         return
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / f'{args.suite}.csv'
+    all_tasks = tasks_for(args.suite)
     done = set()
     if path.exists():
-        for row in csv.DictReader(path.open()):
+        rows = read_rows(path)
+        validate_rows(rows, all_tasks, complete=False)
+        for row in rows:
             done.add((row['suite'], int(row['N']), int(row['D']), int(row['case']), row['variant']))
-    tasks = [t for t in tasks_for(args.suite) if t not in done]
+    tasks = [t for t in all_tasks if t not in done]
     print(f'{args.suite}: {len(tasks)} remaining; {len(done)} recorded', flush=True)
-    metadata = {'suite': args.suite, 'matched_task_count': len(tasks_for(args.suite)),
+    metadata = {'suite': args.suite, 'matched_task_count': len(all_tasks),
                 'python': sys.version, 'workers': args.workers, 'cutoff': 'horizon - 1',
                 'damage_seed': 'case + 1725', 'observation_seed': 'case + 1725',
                 'sources': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
                             for p in [Path(__file__).resolve(), ROOT / 'controllers/MORPHICA.py',
                                       ROOT / 'controllers/FiniteRelayMORPHICA.py',
+                                      ROOT / 'Configurations.py', ROOT / 'Utils.py',
                                       ROOT / 'data/configs/swarm_positions_1000.xlsx',
                                       ROOT / 'data/configs/swarm_positions_200.xlsx']}}
     manifest = OUT / f'{args.suite}.manifest.json'
+    if done and not manifest.exists():
+        raise ValueError('Existing rows have no source manifest; use a new output directory')
     if manifest.exists() and json.loads(manifest.read_text())['sources'] != metadata['sources']:
         raise ValueError('Refusing to mix runs from different code or geometry')
+    if not tasks and done:
+        return
     manifest.write_text(json.dumps(metadata, indent=2) + '\n')
     with path.open('a', newline='') as handle:
         writer = csv.DictWriter(handle, fieldnames=FIELDS)

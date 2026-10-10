@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import torch
 from copy import deepcopy
 from operator import itemgetter
 from Configurations import *
@@ -340,6 +339,8 @@ def make_khop_A_matrix(all_neighbor, positions, num_remain, khop=5):
 
 
 def check_number_of_clusters_torch(positions, d):
+    import torch
+
     m, n = positions.shape
     G = torch.mm(positions, positions.T)
     H = torch.tile(torch.diag(G), (m, 1))

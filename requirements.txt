@@ -1,6 +1,4 @@
-# Core CPU-only pipeline: MORPHICA controller, benchmark runners, table builders
-# and figure scripts. Versions as used for the manuscript evidence revision
-# (Python 3.8).
+# CPU controller, benchmarks, control suites and diagnostics (Python 3.8–3.11).
 numpy==1.24.4
 pandas==2.0.1
 scipy==1.10.1

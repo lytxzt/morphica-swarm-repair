@@ -10,6 +10,8 @@ __pycache__/
 data/logs/*
 data/meta_parameters/
 outputs/
+.venv/
+morphica-data-archive.tar.gz*
 
 # Deliberately no global "*.txt" / "*.sh" ignores: they hide documentation and
 # reproduction scripts.

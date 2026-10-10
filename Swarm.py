@@ -5,17 +5,25 @@ import Utils
 from Configurations import *
 from Environment import Environment
 
-from baselines.CR_MGC import CR_MGC
-from baselines.DEMD import DEMD
-from baselines.GCN_2017 import GCN_2017
-from baselines.GAT import GAT
 from baselines.Centering import *
 from baselines.SIDR import SIDR
 from baselines.HERO import HERO
-from baselines.GDR_TS import GDR_TS
-from baselines.Hybrid_MADDPG_APF import Hybrid_MADDPG_APF
 
-from baselines.dagl.DAGL_Framework import DAGL
+# Keep the original import order (and learned-method seed initialization)
+# when the optional environment is installed. CPU methods work without it.
+_LEARNED_IMPORT_ERROR = None
+try:
+    from baselines.CR_MGC import CR_MGC
+    from baselines.DEMD import DEMD
+    from baselines.GCN_2017 import GCN_2017
+    from baselines.GAT import GAT
+    from baselines.GDR_TS import GDR_TS
+    from baselines.Hybrid_MADDPG_APF import Hybrid_MADDPG_APF
+    from baselines.dagl.DAGL_Framework import DAGL
+except ModuleNotFoundError as exc:
+    if exc.name.split('.')[0] not in {'torch', 'torch_geometric', 'einops'}:
+        raise
+    _LEARNED_IMPORT_ERROR = exc
 
 from controllers.MORPHICA import MORPHICA
 
@@ -38,13 +46,9 @@ class Swarm:
         self.max_time = 0
 
         self.khop = khop
-        self.demd = DEMD()
-
-        self.ddag = DAGL(use_pretrained=use_pretrained)
-        
-        self.cr_gcm = CR_MGC(use_meta=False)
-        self.gcn_2017 = GCN_2017()
-        self.gat = GAT()
+        self._use_pretrained = use_pretrained
+        if algorithm_mode not in {1, 2, 3, 14, 15}:
+            self._initialize_learned_planners()
 
         self.hero = HERO(self.initial_positions)
 
@@ -54,10 +58,8 @@ class Swarm:
         self.morphica = MORPHICA(self.initial_positions, ablation=config_morphica_ablation)
 
         # GDR-TS (Graph-based DRL Topology Self-healing)
-        self.gdr_ts_model = GDR_TS()
-
-        # Hybrid MADDPG + APF
-        self.maddpg_apf_model = Hybrid_MADDPG_APF()
+        if algorithm_mode not in {1, 2, 3, 14, 15}:
+            self._initialize_learned_actors()
 
         self.if_once_gcn_network = False
         self.once_destroy_gcn_network_speed = np.zeros((self.num_of_agents, config_dimension))
@@ -69,6 +71,21 @@ class Swarm:
         self.inertia_counter = 0
         self.inertia = 100
         self.if_finish = [True for i in range(self.num_of_agents)]
+
+    def _initialize_learned_planners(self):
+        if _LEARNED_IMPORT_ERROR is not None:
+            raise RuntimeError(
+                'This method requires requirements-baselines.txt (Python >=3.9).'
+            ) from _LEARNED_IMPORT_ERROR
+        self.demd = DEMD()
+        self.ddag = DAGL(use_pretrained=self._use_pretrained)
+        self.cr_gcm = CR_MGC(use_meta=False)
+        self.gcn_2017 = GCN_2017()
+        self.gat = GAT()
+
+    def _initialize_learned_actors(self):
+        self.gdr_ts_model = GDR_TS()
+        self.maddpg_apf_model = Hybrid_MADDPG_APF()
 
     def destroy_happens(self, destroy_list, environment_positions):
         self.notice_destroy = True
@@ -91,6 +108,9 @@ class Swarm:
 
         if change_algorithm_mode:
             self.algorithm_mode = algorithm_mode
+            if algorithm_mode not in {1, 2, 3, 14, 15} and not hasattr(self, 'demd'):
+                self._initialize_learned_planners()
+                self._initialize_learned_actors()
 
         self.if_once_gcn = False
         self.once_destroy_gcn_speed = np.zeros((self.num_of_agents, config_dimension))

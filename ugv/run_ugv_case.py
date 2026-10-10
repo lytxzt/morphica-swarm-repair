@@ -486,8 +486,9 @@ def run_case(algo_name, N, D, terrain_name, seed_idx,
     terrain_seed = sc['terrain_seed']
     np.random.seed(actual_seed)
     random.seed(actual_seed + 1)
-    import torch
-    torch.manual_seed(actual_seed)
+    if algo_name not in {'MORPHICA', 'CEN', 'HERO', 'SIDR'}:
+        import torch
+        torch.manual_seed(actual_seed)
 
     # -- resolve algorithm --
     if algo_name not in ALGO_MODE:

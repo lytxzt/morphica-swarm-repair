@@ -2,7 +2,7 @@ import argparse
 import pandas as pd
 import numpy as np
 import random
-import torch
+from pathlib import Path
 
 
 parser = argparse.ArgumentParser()
@@ -56,7 +56,9 @@ if args.debug:
     config_dimension = 2
 if args.dimension is not None:
     config_dimension = int(args.dimension)
-config_initial_swarm_positions = pd.read_excel(f"data/configs/swarm_positions_{config_num_of_agents}.xlsx")
+config_initial_swarm_positions = pd.read_excel(
+    Path(__file__).resolve().parent / 'data' / 'configs' /
+    f"swarm_positions_{config_num_of_agents}.xlsx")
 config_initial_swarm_positions = config_initial_swarm_positions.values[:, 1:1+config_dimension]
 config_initial_swarm_positions = np.array(config_initial_swarm_positions, dtype=np.float64)
 

@@ -16,11 +16,15 @@ separate archive because of their size.
 
 ## Data archive
 
-Archived on Zenodo under `<ZENODO DOI>` (to be minted before submission; the
-archive file is `morphica-data-archive.tar.gz`). Code repository:
-<https://github.com/lytxzt/morphica-swarm-repair>.
+Download the archive, checksum and file list from the
+[v1.0.1 GitHub Release](https://github.com/lytxzt/morphica-swarm-repair/releases/tag/v1.0.1):
 
-The archive contains the per-case evidence behind every published number:
+- [morphica-data-archive.tar.gz](https://github.com/lytxzt/morphica-swarm-repair/releases/download/v1.0.1/morphica-data-archive.tar.gz)
+- [SHA-256 checksum](https://github.com/lytxzt/morphica-swarm-repair/releases/download/v1.0.1/morphica-data-archive.tar.gz.sha256)
+- [Archive contents](https://github.com/lytxzt/morphica-swarm-repair/releases/download/v1.0.1/morphica-data-archive.tar.gz.contents.txt)
+
+Together with the tracked control-suite results, the archive contains the
+per-case evidence for the manuscript:
 **498 MB raw, 215 MB compressed** as built by `tools/pack_data_archive.sh`.
 
 | Path in the archive | Content | Size |
@@ -42,9 +46,15 @@ scenario scans, and the rendered ground-swarm videos and frames.
 Unpack at the repository root so that the paths above sit next to `README.md`:
 
 ```bash
-tar -xzf morphica-data-archive.tar.gz -C /path/to/this/repository
+cd /path/to/this/repository
+gh release download v1.0.1 --repo lytxzt/morphica-swarm-repair --pattern 'morphica-data-archive.tar.gz*'
 sha256sum -c morphica-data-archive.tar.gz.sha256
+tar -xzf morphica-data-archive.tar.gz
 ```
+
+Alternatively, download the three assets through the links above and place
+them in the repository root. The checksum records only the archive's filename,
+so it works in either download location.
 
 ### Rebuild the archive
 
@@ -52,7 +62,7 @@ From a full working copy (one that still contains the raw log tree and the
 meta-parameters):
 
 ```bash
-bash tools/pack_data_archive.sh morphica-data-archive.tar.gz
+bash /path/to/this/repository/tools/pack_data_archive.sh morphica-data-archive.tar.gz /path/to/full-working-copy
 ```
 
 ### Damage masks
@@ -73,5 +83,9 @@ SHA-256 of the mask it used, and the manifests record the same rule.
 
 The N=1000 operator ablations combine two cohorts of 50 configurations per
 variant, both on D=500: `ablation.csv` (the offset-zero cohort) and
-`ablation_cohort_b.csv` (a second cohort recorded on a fixed case set and
-validated against the first; see its manifest and `experiments/run_ablation_cohort_b.py`).
+`ablation_cohort_b.csv` (cases 100–149, checked against the corresponding
+historical no-P/no-S logs). Use
+`python experiments/run_ablation_cohort_b.py --verify-archived` to verify that
+cohort. Archived source hashes describe the
+recorded runs; new runs store their own manifests under the selected output
+directory.
