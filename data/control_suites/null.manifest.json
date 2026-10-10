@@ -1,0 +1,16 @@
+{
+  "suite": "null",
+  "matched_task_count": 300,
+  "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+  "workers": 3,
+  "cutoff": "horizon - 1",
+  "damage_seed": "case + 1725",
+  "observation_seed": "case + 1725",
+  "sources": {
+    "tools/run_manuscript_evidence.py": "8aa7ab2f2dbc0bc3e6eec10ea6cd38f3f409fe66003a8ec1e2cec88cb1bfa52e",
+    "controllers/MORPHICA.py": "d04325a6594fd28d48dbe461798a6cacb1dd6201cab4a24e4b65ba8d4b3d8d72",
+    "controllers/FiniteRelayMORPHICA.py": "096adfea3c012b75c3820a162bcf076485c5278527a41f454403aba7131570da",
+    "data/configs/swarm_positions_1000.xlsx": "29e27d50aedb138b000bde5953b15b7095af44289d46e82aa3410b44a18569ed",
+    "data/configs/swarm_positions_200.xlsx": "7181cd652efdcba8648c76d12cf63f042b474f20b8c39ee64f3270fcb30795a6"
+  }
+}

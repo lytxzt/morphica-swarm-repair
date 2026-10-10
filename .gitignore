@@ -4,13 +4,12 @@ __pycache__/
 .vscode/
 .idea/
 *.log
-Paper/build/
 
-# Raw logs and large model parameters live in the data archive (see DATA.md),
-# not in git. The small manuscript-revision evidence tables ARE tracked.
-Logs/*
-!Logs/manuscript_revision/
-Meta_Learning_Results/
+# Results and inputs that are not tracked: the raw logs and meta-parameters come
+# from the data archive (DATA.md); run outputs stay local.
+data/logs/*
+data/meta_parameters/
+outputs/
 
-# Deliberately no global "*.txt" / "*.sh" ignores: they silently hide new
-# documentation and reproduction scripts.
+# Deliberately no global "*.txt" / "*.sh" ignores: they hide documentation and
+# reproduction scripts.

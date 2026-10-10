@@ -8,13 +8,9 @@ from Configurations import *
 
 def make_A_matrix(positions, num_of_agents, d):
     # A = np.zeros((num_of_agents, num_of_agents))
-    # for i in range(num_of_agents):
-    #     for j in range(i, num_of_agents):
-    #         if j == i:
     #             A[i, j] = 0
     #         else:
     #             distance = np.linalg.norm(positions[i, :] - positions[j, :])
-    #             if distance <= d:
     #                 A[i, j] = 1
     #                 A[j, i] = 1
     m, n = positions.shape
@@ -28,7 +24,6 @@ def make_A_matrix(positions, num_of_agents, d):
 
 def make_D_matrix(A, num_of_agents):
     # D = np.zeros((num_of_agents, num_of_agents))
-    # for i in range(num_of_agents):
     #     D[i, i] = np.sum(A[i])
     D = np.diag(np.sum(A, axis=1))
     return deepcopy(D)
@@ -330,7 +325,6 @@ def make_khop_A_matrix(all_neighbor, positions, num_remain, khop=5):
     for i in range(num_remain):
         for j in range(num_remain, num_of_agents-1):
             hop = 1
-            # if np.linalg.norm(positions[j] - central_point) >= embedding_distence : continue
             # dis = np.linalg.norm(positions[j] - central_point) / embedding_distence 
             # dis = np.cos(dis*np.pi/2)
             while(j not in all_neighbor[i][hop-1]):hop+=1
@@ -342,7 +336,6 @@ def make_khop_A_matrix(all_neighbor, positions, num_remain, khop=5):
         A[i, num_of_agents-1] = 1
         A[num_of_agents-1, i] = 1
 
-    # print(A)
     return deepcopy(A)
 
 
@@ -351,11 +344,8 @@ def check_number_of_clusters_torch(positions, d):
     G = torch.mm(positions, positions.T)
     H = torch.tile(torch.diag(G), (m, 1))
     D = torch.sqrt(H + H.T - 2*G)
-    # print(m, n, D)
     A = torch.where(D > d, 0, 1.0)
-    # print(m, n, A)
     D = torch.diag(torch.sum(A, dim=1))
-    # print(m, n, D)
     L = D - A
 
     try:

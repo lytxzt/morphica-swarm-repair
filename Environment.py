@@ -50,7 +50,6 @@ class Environment:
         :param actions: list
         :return:
         """
-        # for i in self.remain_list:
         #     delta_positions = actions[i] * config_constant_speed
         #     self.environment_next_positions[i] = self.environment_positions[i] + delta_positions
         self.environment_next_positions = self.environment_positions + actions * config_constant_speed
@@ -118,7 +117,6 @@ class Environment:
 
             # remain positions
             self.make_remain_positions()
-            # for i in destroy_list:
             #     self.environment_positions[i] = np.array([-100000, -100000, -1000000], dtype=np.float64)
             #     self.environment_next_positions[i] = np.array([-100000, -100000, -100000], dtype=np.float64)
 

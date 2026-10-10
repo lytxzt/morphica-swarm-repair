@@ -5,22 +5,19 @@ import Utils
 from Configurations import *
 from Environment import Environment
 
-from Previous_Algorithm.CR_MGC import CR_MGC
-from Previous_Algorithm.DEMD import DEMD
-from Previous_Algorithm.GCN_2017 import GCN_2017
-from Previous_Algorithm.GAT import GAT
-from Previous_Algorithm.Centering import *
-from Previous_Algorithm.SIDR import SIDR
-from Previous_Algorithm.HERO import HERO
-from Previous_Algorithm.GDR_TS import GDR_TS
-from Previous_Algorithm.Hybrid_MADDPG_APF import Hybrid_MADDPG_APF
+from baselines.CR_MGC import CR_MGC
+from baselines.DEMD import DEMD
+from baselines.GCN_2017 import GCN_2017
+from baselines.GAT import GAT
+from baselines.Centering import *
+from baselines.SIDR import SIDR
+from baselines.HERO import HERO
+from baselines.GDR_TS import GDR_TS
+from baselines.Hybrid_MADDPG_APF import Hybrid_MADDPG_APF
 
-from DAGL_Algorithm.DAGL_Framework import DAGL
+from baselines.dagl.DAGL_Framework import DAGL
 
-from DIRA_Algorithm.DIRA import DIRA
-from DIRA_Algorithm.DIRA_NMI import DIRA_NMI
-from DIRA_Algorithm.MORPHICA import MORPHICA
-from DIRA_Algorithm.DF_scaled import *
+from controllers.MORPHICA import MORPHICA
 
 
 class Swarm:
@@ -51,9 +48,6 @@ class Swarm:
 
         self.hero = HERO(self.initial_positions)
 
-        self.dira = DIRA(self.initial_positions)
-        self.dira_nmi = DIRA_NMI(self.initial_positions)
-        self.dira_nmi_step_info = {}
         self.step_info = {}
 
         # MORPHICA-RPS (morphogenetic repair program)
@@ -116,7 +110,6 @@ class Swarm:
 
         time_start = time.time()
         if flag:
-            # print("connected")
             return deepcopy(actions), max_time
         else:
             # HERO
@@ -124,16 +117,14 @@ class Swarm:
                 actions_hero = self.hero.hero(
                     Utils.difference_set([i for i in range(self.num_of_agents)], self.remain_list), self.true_positions)
 
-                # for i in self.remain_list:
                 #     actions[i] = 0.2 * centering_fly(self.true_positions, self.remain_list, i) + 0.8 * actions_hero[i]
-                actions = 0.2 * centering_fly_v2(self.true_positions, self.remain_list) + 0.8 * actions_hero
+                actions = 0.2 * centering_fly(self.true_positions, self.remain_list) + 0.8 * actions_hero
 
 
             # centering
             elif self.algorithm_mode == 2:
-                # for i in self.remain_list:
                     # actions[i] = centering_fly(self.true_positions, self.remain_list, i)
-                actions = centering_fly_v2(self.true_positions, self.remain_list)
+                actions = centering_fly(self.true_positions, self.remain_list)
 
 
             # SIDR
@@ -150,7 +141,6 @@ class Swarm:
                             actions[self.remain_list[i]] = deepcopy(
                                 self.once_destroy_gcn_network_speed[self.remain_list[i]])
                         # else:
-                        #     print("%d already finish" % self.remain_list[i])
                     max_time = deepcopy(self.max_time)
                 else:
                     self.if_once_gcn_network = True
@@ -170,7 +160,6 @@ class Swarm:
                             actions[self.remain_list[i]] = deepcopy(
                                 self.once_destroy_gcn_network_speed[self.remain_list[i]])
                         # else:
-                        #     print("%d already finish" % self.remain_list[i])
                     max_time = deepcopy(self.max_time)
                 else:
                     self.if_once_gcn_network = True
@@ -237,41 +226,6 @@ class Swarm:
 
 
             # DF alg
-            elif self.algorithm_mode == 9:
-                if self.if_once_gcn_network:
-                    for i in range(len(self.remain_list)):
-                        actions[self.remain_list[i]] = deepcopy(self.once_destroy_gcn_network_speed[self.remain_list[i]])
-                else:
-                    self.if_once_gcn_network = True
-                    # actions = df_scaled(deepcopy(self.true_positions), deepcopy(self.remain_list), config_dimension, config_communication_range, self.khop)
-                    actions = df_scaled_khop(deepcopy(self.true_positions), deepcopy(self.remain_list), config_dimension, config_communication_range, 8)
-                    self.once_destroy_gcn_network_speed = deepcopy(actions)
-
-            # DIRA
-            elif self.algorithm_mode == 10:
-                if not self.if_once_gcn_network:
-                    self.if_once_gcn_network = True
-                    self.original_positions = deepcopy(self.true_positions)
-                    self.velocities = np.zeros((self.num_of_agents, config_dimension))
-
-                actions = self.dira.dira(deepcopy(self.true_positions), deepcopy(self.remain_list))
-                self.velocities = deepcopy(actions)
-
-
-            # DIRA_NMI
-            elif self.algorithm_mode == 11:
-                if not self.if_once_gcn_network:
-                    self.if_once_gcn_network = True
-                    self.original_positions = deepcopy(self.true_positions)
-                    self.velocities = np.zeros((self.num_of_agents, config_dimension))
-
-                actions, self.dira_nmi_step_info = self.dira_nmi.group_fusion_step(
-                    deepcopy(self.true_positions),
-                    deepcopy(self.remain_list),
-                )
-                self.velocities = deepcopy(actions)
-
-            # MORPHICA-RPS (morphogenetic repair program)
             elif self.algorithm_mode == 14 or self.algorithm_mode == 15:
                 if not self.if_once_gcn_network:
                     self.if_once_gcn_network = True
@@ -329,8 +283,6 @@ class Swarm:
                 print("No such algorithm")
 
         time_end = time.time()
-        # with open(f"./Logs/time/{self.algorithm_mode}.txt", 'a') as f:
-        #     print(time_end - time_start, file=f)
 
         return deepcopy(actions), deepcopy(self.max_time)
 

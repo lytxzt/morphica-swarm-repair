@@ -24,49 +24,21 @@ parser.add_argument(
         'no-R',
         'vector-scout',
         'multi-bearer',
-        # DIRA_NMI legacy (still accepted but unused for MORPHICA):
-        'no-anchor',
-        'no-scout',
-        'no-align',
-        'anchor-only',
-        'constant-scouting',
-        'no-size',
-        'no-neighbour-support',
     ],
-    help='Ablation mode (MORPHICA: full, no-S, no-P, no-R, vector-scout, multi-bearer; DIRA_NMI: legacy modes)',
-)
-# Default weights w_A=0.5, w_S=1.0, w_L=0.0 from iter4 weight scan (best avg steps).
-parser.add_argument('--weights', type=str, default='0.5,1.0,0.0', help='DIRA_NMI weights w_A,w_S,w_L')
-parser.add_argument(
-    '--no-velocity-alignment',
-    action='store_true',
-    help='Disable local velocity alignment in DIRA_NMI',
+    help='Ablation mode for the MORPHICA controller',
 )
 args, _unknown_args = parser.parse_known_args()
 
 
-def _parse_dira_nmi_weights(raw_weights):
-    try:
-        values = [float(item.strip()) for item in raw_weights.split(',')]
-    except ValueError:
-        parser.error('--weights must be three comma-separated floats, e.g. 1.0,1.0,1.0')
-
-    if len(values) != 3:
-        parser.error('--weights must contain exactly three values: w_A,w_S,w_L')
-
-    return values
-
 """
 specify a certain GPU
 """
-# import os
 # os.environ["CUDA_VISIBLE_DEVICES"] = '6'
 
 # random seed
 config_seed = args.seed if args.seed is not None else 1
 np.random.seed(config_seed)
 random.seed(config_seed + 1)
-# torch.manual_seed(1)
 
 # configurations on swarm
 config_num_of_agents = 200
@@ -84,7 +56,7 @@ if args.debug:
     config_dimension = 2
 if args.dimension is not None:
     config_dimension = int(args.dimension)
-config_initial_swarm_positions = pd.read_excel(f"Configurations/swarm_positions_{config_num_of_agents}.xlsx")
+config_initial_swarm_positions = pd.read_excel(f"data/configs/swarm_positions_{config_num_of_agents}.xlsx")
 config_initial_swarm_positions = config_initial_swarm_positions.values[:, 1:1+config_dimension]
 config_initial_swarm_positions = np.array(config_initial_swarm_positions, dtype=np.float64)
 
@@ -117,14 +89,11 @@ if args.destroyed is not None:
     config_num_destructed_UAVs = int(args.destroyed)
 config_normalize_positions = True
 
-# configurations on DIRA_NMI group-fusion dynamics
+# configurations from the command line
 config_algorithm_name = args.algorithm
-config_dira_nmi_w_A, config_dira_nmi_w_S, config_dira_nmi_w_L = _parse_dira_nmi_weights(args.weights)
-config_dira_nmi_ablation = args.ablation
 config_morphica_ablation = args.ablation
-config_dira_nmi_use_velocity_alignment = not args.no_velocity_alignment
 
-# Non-ideal communication (E9)
+# Non-ideal communication (observation stress)
 parser.add_argument('--packet-loss', type=float, default=0.0,
                     help='Packet loss probability p ∈ [0,1]')
 parser.add_argument('--delay', type=int, default=0,
@@ -133,9 +102,9 @@ parser.add_argument('--position-noise', type=float, default=0.0,
                     help='Position error σ (meters, Gaussian std)')
 _args2, _ = parser.parse_known_args()
 
-_E9_packet_loss = _args2.packet_loss
-_E9_delay_steps = _args2.delay
-_E9_position_noise = _args2.position_noise
+_obs_packet_loss = _args2.packet_loss
+_obs_delay_steps = _args2.delay
+_obs_position_noise = _args2.position_noise
 
 # configurations on training GCN
 config_alpha_k = [0.01, 0.05, 0.1, 0.15, 0.2, 0.5, 0.9, 0.95, 1, 1.5, 2, 3, 5]

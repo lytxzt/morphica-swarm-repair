@@ -1,0 +1,12 @@
+{
+  "artifact": "data/control_suites/diagnostics/ring_center_case129.npz",
+  "case": 129,
+  "seed": 1854,
+  "mask_sha256": "955fc0d75050cc4332195c2907c34637d6ba5b1e0c9d0fa17ec9e7d04a38fd8a",
+  "artifact_sha256": "e0abc7c74b3d9637cecca78f113495e6950c621184561ef022c013e86e4a6833",
+  "sources": {
+    "experiments/ring_center_replay.py": "15dad0bdb53ac442cbea92e8aa02c06aad8bab0115fa6243b683c712701bcc1c",
+    "controllers/MORPHICA.py": "d04325a6594fd28d48dbe461798a6cacb1dd6201cab4a24e4b65ba8d4b3d8d72",
+    "data/configs/swarm_positions_1000.xlsx": "29e27d50aedb138b000bde5953b15b7095af44289d46e82aa3410b44a18569ed"
+  }
+}
