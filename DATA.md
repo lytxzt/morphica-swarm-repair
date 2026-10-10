@@ -1,8 +1,8 @@
 # Data accompanying this repository
 
 Two kinds of data are involved. Small, human-readable results are tracked in this
-repository; raw per-case logs and large model parameters are distributed as a
-separate archive because of their size.
+repository; raw per-case logs and large model parameters are packaged in a
+separate local archive because of their size.
 
 ## Tracked in this repository
 
@@ -16,12 +16,14 @@ separate archive because of their size.
 
 ## Data archive
 
-Download the archive, checksum and file list from the
-[v1.0.1 GitHub Release](https://github.com/lytxzt/morphica-swarm-repair/releases/tag/v1.0.1):
+The archive is prepared locally and **has not been publicly released**. A
+download link will be added when it is published. Its three files are
+`morphica-data-archive.tar.gz`, `morphica-data-archive.tar.gz.sha256` and
+`morphica-data-archive.tar.gz.contents.txt`.
 
-- [morphica-data-archive.tar.gz](https://github.com/lytxzt/morphica-swarm-repair/releases/download/v1.0.1/morphica-data-archive.tar.gz)
-- [SHA-256 checksum](https://github.com/lytxzt/morphica-swarm-repair/releases/download/v1.0.1/morphica-data-archive.tar.gz.sha256)
-- [Archive contents](https://github.com/lytxzt/morphica-swarm-repair/releases/download/v1.0.1/morphica-data-archive.tar.gz.contents.txt)
+The code and tracked inputs support fresh main benchmarks. Verification and
+reruns of matched control suites use case lists from the raw logs and require
+the local archive; CR-MGC reruns also require its meta-parameters.
 
 Together with the tracked control-suite results, the archive contains the
 per-case evidence for the manuscript:
@@ -47,14 +49,13 @@ Unpack at the repository root so that the paths above sit next to `README.md`:
 
 ```bash
 cd /path/to/this/repository
-gh release download v1.0.1 --repo lytxzt/morphica-swarm-repair --pattern 'morphica-data-archive.tar.gz*'
 sha256sum -c morphica-data-archive.tar.gz.sha256
 tar -xzf morphica-data-archive.tar.gz
 ```
 
-Alternatively, download the three assets through the links above and place
-them in the repository root. The checksum records only the archive's filename,
-so it works in either download location.
+Place the local archive and its checksum in the repository root before running
+these commands. The checksum records only the archive's filename, so it also
+works after moving the files to another directory.
 
 ### Rebuild the archive
 

@@ -14,8 +14,8 @@ computed.
 This repository contains the controller, the simulation core, the benchmark and
 control-suite runners, the comparison methods, the diagnostic scripts, the
 per-case results of the control suites, and the inputs needed to reproduce them.
-Raw per-case logs and the larger model parameters are distributed separately —
-see [DATA.md](DATA.md).
+Raw per-case logs and the larger model parameters belong to a separate archive,
+whose contents and availability are described in [DATA.md](DATA.md).
 
 Repository: <https://github.com/lytxzt/morphica-swarm-repair>
 
@@ -67,9 +67,11 @@ torch 2.6.0+cu124 on NVIDIA RTX 4080 SUPER GPUs.
 
 ## Reproduce
 
-Raw per-case logs are not stored in git. Unpack the data archive first (see
-[DATA.md](DATA.md)) so that `data/logs/` and `data/meta_parameters/` are
-populated.
+Raw per-case logs are not stored in git, and the separate data archive has not
+yet been published. With a local copy of that archive, unpack it first (see
+[DATA.md](DATA.md)) so that `data/logs/` and `data/meta_parameters/` are populated.
+The regression checks and fresh main sweep below run without the archive;
+verification of the recorded suites and their matched reruns require it.
 
 ```bash
 # Verify the archived control results (no simulation or file changes)
@@ -100,7 +102,7 @@ damage-mask SHA-256, seed and event indicator.
 
 ## Data
 
-Small results are tracked here; raw logs and large parameters are archived — see
+Small results are tracked here; raw logs and large parameters are archived locally — see
 [DATA.md](DATA.md) for contents, sizes, unpacking and checksums.
 
 ## Provenance and attribution
@@ -114,5 +116,6 @@ is redistributed.
 ## Licence and citation
 
 Released under the MIT licence — see [LICENSE](LICENSE). Cite the software
-using [CITATION.cff](CITATION.cff). The [v1.0.1 release](https://github.com/lytxzt/morphica-swarm-repair/releases/tag/v1.0.1)
-provides the code snapshot and accompanying data archive.
+using [CITATION.cff](CITATION.cff). The
+[v1.0.1 tag](https://github.com/lytxzt/morphica-swarm-repair/tree/v1.0.1)
+identifies the code snapshot. Data availability is recorded in [DATA.md](DATA.md).

@@ -4,7 +4,7 @@ title: "MORPHICA: source-free morphogenetic repair for fragmented robot swarms"
 type: software
 version: "1.0.1"
 date-released: "2026-10-10"
-url: "https://github.com/lytxzt/morphica-swarm-repair/releases/tag/v1.0.1"
+url: "https://github.com/lytxzt/morphica-swarm-repair"
 license: MIT
 repository-code: "https://github.com/lytxzt/morphica-swarm-repair"
 authors:
