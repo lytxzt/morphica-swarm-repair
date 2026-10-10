@@ -1,0 +1,21 @@
+{
+  "radius": 150,
+  "ring_agents": 8,
+  "centre_agents": 1,
+  "CR": 120,
+  "margin": 20,
+  "results": {
+    "no-P": {
+      "initial_max_speed": 3.2311742659485544e-23,
+      "K_final": 2,
+      "steps": 2000,
+      "max_displacement": 0.0
+    },
+    "full": {
+      "initial_max_speed": 1.0,
+      "K_final": 1,
+      "steps": 30,
+      "max_displacement": 30.00000000000024
+    }
+  }
+}

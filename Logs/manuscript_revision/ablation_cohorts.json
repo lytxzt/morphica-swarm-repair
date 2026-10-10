@@ -1,0 +1,86 @@
+{
+  "offset_zero": {
+    "full": {
+      "n": 50,
+      "rmst": 120.52,
+      "failures": 0,
+      "delta": 0.0,
+      "delta_ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "no-R": {
+      "n": 50,
+      "rmst": 145.08,
+      "failures": 0,
+      "delta": 24.56,
+      "delta_ci": [
+        8.439,
+        42.20599999999997
+      ]
+    },
+    "no-P": {
+      "n": 50,
+      "rmst": 120.44,
+      "failures": 0,
+      "delta": -0.08,
+      "delta_ci": [
+        -1.72,
+        1.6004999999999974
+      ]
+    },
+    "no-S": {
+      "n": 50,
+      "rmst": 145.56,
+      "failures": 0,
+      "delta": 25.04,
+      "delta_ci": [
+        17.8995,
+        33.58
+      ]
+    }
+  },
+  "historical_reconstructed": {
+    "full": {
+      "n": 50,
+      "rmst": 128.04,
+      "failures": 0,
+      "delta": 0.0,
+      "delta_ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "no-R": {
+      "n": 50,
+      "rmst": 149.68,
+      "failures": 0,
+      "delta": 21.64,
+      "delta_ci": [
+        5.5995,
+        36.26049999999999
+      ]
+    },
+    "no-P": {
+      "n": 50,
+      "rmst": 160.02,
+      "failures": 1,
+      "delta": 31.98,
+      "delta_ci": [
+        -3.64,
+        100.5205
+      ]
+    },
+    "no-S": {
+      "n": 50,
+      "rmst": 143.34,
+      "failures": 0,
+      "delta": 15.3,
+      "delta_ci": [
+        9.08,
+        22.3405
+      ]
+    }
+  }
+}

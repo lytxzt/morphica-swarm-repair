@@ -1,0 +1,20 @@
+{
+  "panel": "d",
+  "source": "Logs/ring_center_test/connected_ring_trajectory.pkl",
+  "N": 45,
+  "n_ring": 40,
+  "n_center": 5,
+  "initial_subnets": 2,
+  "full_steps": 427,
+  "full_final_subnets": 1,
+  "noP_steps": 2000,
+  "noP_final_subnets": 2,
+  "max_step": 2000,
+  "jitter": {
+    "seed": 27,
+    "angular_concentration": 8.0,
+    "radial_std": 75.0,
+    "centre_std": 17.0,
+    "trajectory_stride": 25
+  }
+}

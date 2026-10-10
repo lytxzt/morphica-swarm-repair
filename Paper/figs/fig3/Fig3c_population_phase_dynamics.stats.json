@@ -1,0 +1,31 @@
+{
+  "panel": "c",
+  "destroyed_values": [
+    250,
+    500,
+    750
+  ],
+  "phase_sources": {
+    "250": {
+      "source_csv": "Logs/algorithm_sweep/N1000/MORPHICA_traj_v2/MORPHICA_d250_50cases_traj.csv",
+      "source_txt": "Logs/algorithm_sweep/N1000/MORPHICA_traj_v2/MORPHICA_d250_50cases.txt",
+      "cases": 50,
+      "rows": 1944,
+      "mean_initial_subnets": 7.36
+    },
+    "500": {
+      "source_csv": "Logs/algorithm_sweep/N1000/MORPHICA_traj_v2/MORPHICA_d500_50cases_traj.csv",
+      "source_txt": "Logs/algorithm_sweep/N1000/MORPHICA_traj_v2/MORPHICA_d500_50cases.txt",
+      "cases": 50,
+      "rows": 5976,
+      "mean_initial_subnets": 36.52
+    },
+    "750": {
+      "source_csv": "Logs/algorithm_sweep/N1000/MORPHICA_traj_v2/MORPHICA_d750_50cases_traj.csv",
+      "source_txt": "Logs/algorithm_sweep/N1000/MORPHICA_traj_v2/MORPHICA_d750_50cases.txt",
+      "cases": 50,
+      "rows": 18513,
+      "mean_initial_subnets": 85.12
+    }
+  }
+}

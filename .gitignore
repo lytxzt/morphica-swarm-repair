@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.vscode/
+.idea/
+*.log
+Paper/build/
+
+# Raw logs and large model parameters live in the data archive (see DATA.md),
+# not in git. The small manuscript-revision evidence tables ARE tracked.
+Logs/*
+!Logs/manuscript_revision/
+Meta_Learning_Results/
+
+# Deliberately no global "*.txt" / "*.sh" ignores: they silently hide new
+# documentation and reproduction scripts.

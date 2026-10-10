@@ -1,0 +1,250 @@
+{
+  "regression_tests": {
+    "passed": 9,
+    "failed": 0
+  },
+  "suites": {
+    "null": {
+      "rows": 300,
+      "failures": 299,
+      "unique_tasks": true,
+      "damage_hashes_verified": true,
+      "source_hashes_verified": 5
+    },
+    "ablation": {
+      "rows": 100,
+      "failures": 0,
+      "unique_tasks": true,
+      "damage_hashes_verified": true,
+      "source_hashes_verified": 5
+    },
+    "nonideal": {
+      "rows": 750,
+      "failures": 0,
+      "unique_tasks": true,
+      "damage_hashes_verified": true,
+      "source_hashes_verified": 5
+    },
+    "relay": {
+      "rows": 450,
+      "failures": 0,
+      "unique_tasks": true,
+      "damage_hashes_verified": true,
+      "source_hashes_verified": 5
+    },
+    "ablation_repair": {
+      "rows": 200,
+      "failures": 1,
+      "unique_tasks": true,
+      "damage_hashes_verified": true,
+      "source_hashes_verified": 5
+    }
+  },
+  "source_hashes_verified": 214,
+  "exact_relay_historical_matches": 75,
+  "manuscript": {
+    "notes": 14,
+    "supplementary_tables": 19,
+    "pages": 38,
+    "unique_labels": 26,
+    "unresolved_references": 0,
+    "overfull_boxes": 0,
+    "pdf_sha256": "32c14aecfe39f9228555b5ca2ccccc3fa03271ab626a4acc9dcc29483dd5988c",
+    "visual_review_pages": [
+      1,
+      11,
+      12,
+      23,
+      24,
+      25,
+      33,
+      34
+    ],
+    "bibliography_keys_verified": 24
+  },
+  "supplementary_citations": {
+    "tables_cited": 19,
+    "unreferenced_tables": [],
+    "first_citation_order": [
+      {
+        "number": "S1",
+        "label": "tab:supp_main_n1000"
+      },
+      {
+        "number": "S2",
+        "label": "tab:supp_main_aggregate"
+      },
+      {
+        "number": "S3",
+        "label": "tab:supp_scale"
+      },
+      {
+        "number": "S4",
+        "label": "tab:supp_n2000"
+      },
+      {
+        "number": "S5",
+        "label": "tab:supp_process_metrics"
+      },
+      {
+        "number": "S6",
+        "label": "tab:supp_degree"
+      },
+      {
+        "number": "S7",
+        "label": "tab:supp_null"
+      },
+      {
+        "number": "S8",
+        "label": "tab:supp_cr90"
+      },
+      {
+        "number": "S9",
+        "label": "tab:supp_cr120"
+      },
+      {
+        "number": "S10",
+        "label": "tab:supp_cr150"
+      },
+      {
+        "number": "S11",
+        "label": "tab:supp_cr180"
+      },
+      {
+        "number": "S12",
+        "label": "tab:supp_cr_wilson"
+      },
+      {
+        "number": "S13",
+        "label": "tab:supp_nonideal"
+      },
+      {
+        "number": "S14",
+        "label": "tab:supp_ablations"
+      },
+      {
+        "number": "S15",
+        "label": "tab:supp_relay"
+      },
+      {
+        "number": "S16",
+        "label": "tab:supp_ugv_cells"
+      },
+      {
+        "number": "S17",
+        "label": "tab:supp_ugv_cr"
+      },
+      {
+        "number": "S18",
+        "label": "tab:supp_information_model"
+      },
+      {
+        "number": "S19",
+        "label": "tab:supp_runtime"
+      }
+    ],
+    "compiled_numbering_verified": true,
+    "physical_order_matches_citations": true,
+    "generation_idempotent": true
+  },
+  "n2000_original_outcomes_verified": 750,
+  "manuscript_case_identifiers_removed": true,
+  "internal_process_wording_removed": true,
+  "cr180_d750_ml_dagl_rerun": "truncated 6/25 log completed to 25/25 by a fresh single-process run on lh@192.168.1.63 (two fresh runs agree to the step); first six cases reproduced exactly; corrected cell 184 +- 112 [150,232], 0/25",
+  "all_ablation_data_retained": true,
+  "seed_enumeration_removed": true,
+  "numeric_tables_unchanged": false,
+  "flagship_and_ablation_samples": {
+    "flagship_D500": {
+      "n": 50,
+      "rmst": 120.52
+    },
+    "ablation_N1000": {
+      "n": 100,
+      "rmst": 124.28
+    },
+    "distinct_samples": true
+  },
+  "ablation_provenance": {
+    "N1000_per_variant": 100,
+    "retained_configurations": 50,
+    "reconstructed_configurations": 50,
+    "reconstructed_rows": 200,
+    "legacy_outcomes_reproduced": {
+      "no-P": 50,
+      "no-S": 50
+    },
+    "diagnostic": "Logs/manuscript_revision/diagnostics/case129_replay.json",
+    "cohort_summary": "Logs/manuscript_revision/ablation_cohorts.json",
+    "case_ids_and_seeds_in_manuscript": false,
+    "legacy_reconstruction": {
+      "no-P": {
+        "legacy_source": "Logs/algorithm_sweep/N1000/MORPHICA_noP/MORPHICA_d500_50cases.txt",
+        "legacy_sha256": "b5c6e3644dacdc949ad0f17ebc6d98607aa850754fd16864e179126968207164",
+        "local_to_actual_case_offset": 100,
+        "matching_outcomes": 50,
+        "legacy_count": 50,
+        "replay_failures": [
+          129
+        ]
+      },
+      "no-S": {
+        "legacy_source": "Logs/algorithm_sweep/N1000/MORPHICA_noS/MORPHICA_d500_50cases.txt",
+        "legacy_sha256": "91a9a32ee3febd48243d9704f69fb3ce3421a070fdc3a0db5252daa4cbdf6b56",
+        "local_to_actual_case_offset": 100,
+        "matching_outcomes": 50,
+        "legacy_count": 50,
+        "replay_failures": []
+      }
+    },
+    "full_RMST": 124.28,
+    "noP_RMST": 140.23,
+    "noP_failures": 1,
+    "paired_delta": 15.95,
+    "paired_delta_ci": [
+      -2.02,
+      50.63174999999999
+    ],
+    "diagnostic_verified": true,
+    "figure3b_verified": true,
+    "generation_idempotent": true
+  },
+  "numeric_change_scope": "N=1000 operator ablation: retain existing 50 configurations and reconstruct all four variants on the historical 50; other table cells retained",
+  "editorial_revision": {
+    "seed_values_and_case_ids_in_manuscript": false,
+    "repeated_defensive_wording_removed": true,
+    "shared_inputs_and_statistics_retained": true,
+    "uncertainty_retained": true,
+    "planned_UAV_result_placeholder_removed": true,
+    "unescaped_UGV_percentages_fixed": 3
+  },
+  "unified_narrative_revision": {
+    "skill": "anti-defensive-writing",
+    "supplied_review_addressed": [
+      "A1",
+      "A2",
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5"
+    ],
+    "abstract_words": 201,
+    "introduction_unchanged": true,
+    "generated_table_blocks_unchanged": true,
+    "scientific_artifacts_unchanged": 35,
+    "verified_table_sources": 214,
+    "terrain_summary_verified": {
+      "ridge": 45,
+      "rolling": 39,
+      "roughland": 50,
+      "mixed": 50
+    },
+    "simulation_scope_retained": true,
+    "planned_UAV_status_retained": true,
+    "detailed_UAV_protocol_in_experiment_plan": true,
+    "stale_speculative_baseline_interpretation_removed": true,
+    "submission_and_writing_instructions_removed": true,
+    "bibliography_and_supplementary_references_verified": true
+  }
+}
