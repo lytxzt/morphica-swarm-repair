@@ -1,4 +1,5 @@
 from copy import deepcopy
+import pathlib
 from torch.optim import Adam
 import Utils
 from Configurations import *
@@ -10,6 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 best_hidden_dimension = 500
+_ROOT = pathlib.Path(__file__).resolve().parents[1]
 best_dropout = 0.1
 lr = 0.00001
 
@@ -36,7 +38,7 @@ class CR_MGC:
         self.gcn_network = GCN_fixed_structure(nfeat=dimension, nhid=self.hidden_dimension, nclass=dimension,
                                                dropout=self.dropout_value, if_dropout=True, bias=True)
         if self.if_meta:
-            meta_param = np.load('data/meta_parameters/meta_%d.npy' % remain_num, allow_pickle=True)
+            meta_param = np.load(_ROOT / 'data' / 'meta_parameters' / f'meta_{remain_num}.npy', allow_pickle=True)
             meta_param = meta_param.item()
             print("loading meta param meta_%d" % remain_num)
             for key in self.gcn_network.state_dict().keys():
@@ -366,10 +368,12 @@ class CR_MGC:
         return gradient, loss.cpu().data.numpy()
 
     def save_GCN(self, counter):
-        torch.save(self.gcn_network, "Trainable_GCN/meta_parameters/GCN__small_small_scale_%d.pkl" % counter)
+        out = _ROOT / 'outputs' / 'meta_parameters'; out.mkdir(parents=True, exist_ok=True)
+        torch.save(self.gcn_network, out / f'GCN_small_scale_{counter}.pkl')
 
     def save_meta_param(self):
-        torch.save(self.gcn_network, "Trainable_GCN/meta_param.pkl")
+        out = _ROOT / 'outputs' / 'meta_parameters'; out.mkdir(parents=True, exist_ok=True)
+        torch.save(self.gcn_network, out / 'meta_param.pkl')
 
 class GraphConvolution(Module):
     def __init__(self, in_features, out_features, bias=True):

@@ -13,12 +13,12 @@ cd "$ROOT"
 
 EVIDENCE=(
   "Logs/algorithm_sweep"        # per-case logs and K(t) trajectories for every benchmark cell
-  "Logs/ugv/benchmark_matrix"  # frozen 200-scenario ground-swarm matrix, masks, metrics
+  "Logs/ugv/manuscript_matrix"  # frozen 200-scenario ground-swarm matrix, masks, metrics
   "Logs/ugv/cr80_sensitivity"   # ridge-only CR=80/120 sensitivity
   "Logs/ring_center_test"       # connected-ring diagnostic trajectory
   "Logs/ugv/render_demo/case_mixed_random_MORPHICA_N100_D50_r50_cr120_w1.2_seed7.json"
   "Logs/ugv/render_demo/terrain/mixed_N100_s10013"
-  "Meta_Learning_Results"       # CR-MGC meta-parameters, needed to re-run that method
+  "Meta_Learning_Results/meta_parameters"  # CR-MGC meta-parameters, needed to re-run that method
 )
 OPTIONAL=(
   "Logs/ugv/cases"
@@ -33,7 +33,7 @@ PATHS=("${EVIDENCE[@]}")
 for p in "${OPTIONAL[@]}"; do [ -e "$p" ] && PATHS+=("$p"); done
 
 echo "packing ${#PATHS[@]} paths (~$(du -sch "${PATHS[@]}" 2>/dev/null | tail -1 | cut -f1) raw)"
-tar --transform='s|^Logs/|data/logs/|; s|^Meta_Learning_Results/|data/meta_parameters/|' \
+tar --transform='s|^Logs/|data/logs/|;s|^Meta_Learning_Results/meta_parameters|data/meta_parameters|;s|^data/logs/ugv/manuscript_matrix|data/logs/ugv/benchmark_matrix|' \
     -czf "$OUT" "${PATHS[@]}"
 tar -tzf "$OUT" > "$OUT.contents.txt"
 sha256sum "$OUT" > "$OUT.sha256"
